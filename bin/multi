@@ -8,9 +8,15 @@ if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
     throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
 }
 
+if (isset($_SERVER['argv'][1])) {
+    $tenant = $_SERVER['argv'][1];
+    unset($_SERVER['argv'][1]);
+    $_SERVER['APP_RUNTIME_OPTIONS'] = ['dotenv_path' => 'env/'.$tenant.'.env'];
+} else {
+    $_SERVER['argv'] = array_values($_SERVER['argv']);
+}
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
-echo "HELLO";
 
 return function (array $context) {
     $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
